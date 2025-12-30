@@ -1,7 +1,8 @@
 import axios from "axios";
+import.meta.env.VITE_BASE_URL
 
 const axiosInstance = axios.create({
-	baseURL: import.meta.mode === "development" ? "https://e-commerce-backend-1-fmkm.onrender.com/api" : "/api",
+	baseURL: import.meta.mode === "development" ? import.meta.env.VITE_BASE_URL : "/api",
 	withCredentials: true, // send cookies to the server
 });
 
