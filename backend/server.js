@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import path from "path";
+import morgan from "morgan";
+import cors from "cors";
 
 import authRoutes from "./routes/auth.route.js";
 import productRoutes from "./routes/product.route.js";
@@ -14,8 +16,13 @@ import { connectDB } from "./lib/db.js";
 
 dotenv.config();
 
+
+
 const app = express();
 const PORT = process.env.PORT || 5000;
+app.use(cors(
+	{origin: '*', credentials: true}	
+));
 
 const __dirname = path.resolve();
 
@@ -29,6 +36,8 @@ app.use("/api/coupons", couponRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
+app.use(morgan("dev"));
+
 if (process.env.NODE_ENV === "production") {
 	app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
@@ -36,7 +45,9 @@ if (process.env.NODE_ENV === "production") {
 		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
 	});
 }
-
+app.get("/", (req, res) => {
+	res.send("API is running....");
+});
 app.listen(PORT, () => {
 	console.log("Server is running on http://localhost:" + PORT);
 	connectDB();
